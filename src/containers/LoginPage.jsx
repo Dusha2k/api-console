@@ -153,7 +153,7 @@ function LoginPage({history}) {
               <Input
                 handleChange={handleChange}
                 value={values.subLogin}
-                placeholder={'Саблогин'}
+                placeholder={'Сублогин'}
                 label={'Сублогин'}
                 id={'subLogin'}
                 required={false}
@@ -167,7 +167,16 @@ function LoginPage({history}) {
                 type={'password'}
                 errorMessage={errors.password}
               />
-              <Button text={'Войти'} onClick={handleSubmit} type={'submit'} loading={loading} disabled={Object.keys(errors).length > 0} />
+              <Button
+                text={'Войти'}
+                onClick={(e) => {
+                  handleSubmit();
+                  e.currentTarget.blur();
+                }}
+                type={'submit'}
+                loading={loading}
+                disabled={Object.keys(errors).length > 0}
+              />
             </form>
           )}
         </Formik>
