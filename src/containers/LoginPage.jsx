@@ -14,6 +14,13 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  > a {
+    font-size: 16px;
+    line-height: 20px;
+    color: #999999;
+    text-decoration: none;
+    margin-top: 20px;
+  }
 `;
 
 const Form = styled.section`
@@ -181,6 +188,9 @@ function LoginPage({history}) {
           )}
         </Formik>
       </Form>
+      <a href="https://github.com/Dusha2k" target="_blank" rel="noreferrer noopener">
+        github.com/Dusha2k
+      </a>
     </Wrapper>
   );
 }
