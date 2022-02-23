@@ -9,7 +9,7 @@ import {jsonHistoryUpdate} from '../../../store/actions';
 
 type ItemType = {items: Array<{name: string; status: string}>};
 
-export const HistoryWrapper = ({myRef}: any) => {
+export const HistoryWrapper = () => {
   const dispatch = useDispatch();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const historyItems = useSelector((state: {apiHistory: {historyRequests: Array<any> | null}}) => state.apiHistory.historyRequests);
@@ -40,16 +40,25 @@ export const HistoryWrapper = ({myRef}: any) => {
           <Droppable droppableId={'list'} direction="horizontal">
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps} style={{display: 'flex', gap: '10px', width: 'fit-content'}}>
-                {historyItems?.map((item, index) => (
-                  <HistoryItem status={item.status} name={item.action} id={index} key={index} />
-                ))}
+                {historyItems?.map((item, index) => {
+                  return (
+                    <HistoryItem
+                      status={item.status}
+                      body={item.body}
+                      action={item.action}
+                      id={index}
+                      key={index}
+                      response={item.response}
+                    />
+                  );
+                })}
                 {provided.placeholder}
               </div>
             )}
           </Droppable>
         </ItemsWrapper>
       </DragDropContext>
-      <ClearButton>
+      <ClearButton onClick={() => dispatch(jsonHistoryUpdate([]))}>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1 1L19 19" stroke="#0D0D0D" strokeWidth="2" strokeLinecap="round" />
           <path d="M19 1L1 19" stroke="#0D0D0D" strokeWidth="2" strokeLinecap="round" />
@@ -69,6 +78,7 @@ const ItemsWrapper = styled.div`
   overflow: scroll;
   position: relative;
   padding: 10px 0 10px 15px;
+  width: 100%;
   border-right: 1px solid rgba(0, 0, 0, 0.2);
   &::-webkit-scrollbar {
     display: none;
@@ -81,6 +91,7 @@ const ClearButton = styled.div`
   align-items: center;
   padding: 13px;
   position: relative;
+  cursor: pointer;
   &:before {
     content: ' ';
     height: 100%;

@@ -1,17 +1,24 @@
 import {ActionTypes} from '../constants';
 import {handleActions} from 'redux-actions';
 
-export type StateType = {loading: boolean; historyRequests: Array<any>; currentJsonTemplate: string | null; autoSendJson: boolean};
+export type StateType = {
+  loading: boolean;
+  historyRequests: Array<any>;
+  currentJsonTemplate: string | null;
+  autoSendJson: boolean;
+  lastTemplateJson: Array<string>;
+};
 
 const initialState: StateType = {
   loading: false,
   historyRequests: [],
   currentJsonTemplate: null,
   autoSendJson: false,
+  lastTemplateJson: ['', ''],
 };
 
 export default {
-  sendJson: handleActions(
+  sendJson: handleActions<StateType, any>(
     {
       [ActionTypes.SEND_JSON]: (state, {payload}) => {
         console.log(payload);
@@ -44,7 +51,13 @@ export default {
       [ActionTypes.JSON_HISTORY_UPDATE]: (state, {payload}) => {
         return {
           ...state,
-          historyRequests: [...((payload as unknown) as Array<any>)],
+          historyRequests: [...payload],
+        };
+      },
+      [ActionTypes.SET_LAST_TEMPLATE]: (state, {payload}) => {
+        return {
+          ...state,
+          lastTemplateJson: [payload[0], payload[1]],
         };
       },
     },

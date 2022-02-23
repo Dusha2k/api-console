@@ -1,14 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Draggable} from 'react-beautiful-dnd';
+import {useDispatch} from 'react-redux';
+import {setLastTemplate} from '../../../store/actions';
 
-export const HistoryItem = ({status, name, id}: {status: string; name: string; id: number}) => {
+export const HistoryItem = ({
+  status,
+  body,
+  action,
+  id,
+  response,
+}: {
+  status: string;
+  body: string;
+  action: string;
+  id: number;
+  response: string;
+}) => {
+  const dispatch = useDispatch();
   return (
-    <Draggable draggableId={`${id}${name}`} index={id}>
+    <Draggable draggableId={`${id}${action}`} index={id}>
       {(provided) => (
-        <Item ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+        <Item
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          onClick={() => dispatch(setLastTemplate([JSON.stringify(body, null, 2), JSON.stringify(response, null, 2)]))}
+        >
           <div style={{backgroundColor: status === 'fail' ? 'red' : 'green', width: '10px', height: '10px', borderRadius: '50%'}} />
-          <div style={{textAlign: 'center'}}>{name ? name : 'undefined'}</div>
+          <div style={{textAlign: 'center'}}>{action ? action : 'undefined'}</div>
           <svg width="6" height="18" viewBox="0 0 6 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#clip0)">
               <circle cx="3" cy="2" r="2" fill="black" fillOpacity="0.2" />

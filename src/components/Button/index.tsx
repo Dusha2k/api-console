@@ -23,6 +23,7 @@ const StyledButton = styled.button`
   &:focus {
     border: 2px solid #45a5ff;
     border-radius: 7px;
+    outline: none;
   }
   &:hover {
     background: linear-gradient(0deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)),
