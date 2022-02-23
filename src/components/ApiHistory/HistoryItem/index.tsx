@@ -4,11 +4,11 @@ import {Draggable} from 'react-beautiful-dnd';
 
 export const HistoryItem = ({status, name, id}: {status: string; name: string; id: number}) => {
   return (
-    <Draggable draggableId={name + id} index={id}>
+    <Draggable draggableId={`${id}${name}`} index={id}>
       {(provided) => (
         <Item ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-          <div style={{backgroundColor: status === 'failure' ? 'red' : 'green', width: '10px', height: '10px', borderRadius: '50%'}} />
-          <div style={{textAlign: 'center', paddingBottom: '4px'}}>{name}</div>
+          <div style={{backgroundColor: status === 'fail' ? 'red' : 'green', width: '10px', height: '10px', borderRadius: '50%'}} />
+          <div style={{textAlign: 'center'}}>{name ? name : 'undefined'}</div>
           <svg width="6" height="18" viewBox="0 0 6 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#clip0)">
               <circle cx="3" cy="2" r="2" fill="black" fillOpacity="0.2" />

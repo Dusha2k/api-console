@@ -14,6 +14,7 @@ export default {
   auth: handleActions(
     {
       [ActionTypes.AUTHENTICATE]: (state) => {
+        console.log('auth');
         return {
           ...state,
           loading: true,
@@ -41,6 +42,7 @@ export default {
         };
       },
       [ActionTypes.LOGOUT]: (state) => {
+        console.log('hello im here');
         return {
           ...state,
           loading: false,

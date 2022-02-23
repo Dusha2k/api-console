@@ -3,12 +3,16 @@ import {HistoryItem} from '../HistoryItem';
 import styled from 'styled-components';
 import {DragDropContext, Droppable, DropResult} from 'react-beautiful-dnd';
 import {reorderArray} from '../../../helpers/functions';
+import {useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
+import {jsonHistoryUpdate} from '../../../store/actions';
 
 type ItemType = {items: Array<{name: string; status: string}>};
 
-export const HistoryWrapper = ({items}: ItemType) => {
-  const [list, setList] = useState<Array<{name: string; status: string}>>(items);
+export const HistoryWrapper = ({myRef}: any) => {
+  const dispatch = useDispatch();
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const historyItems = useSelector((state: {apiHistory: {historyRequests: Array<any> | null}}) => state.apiHistory.historyRequests);
 
   const onWheel = (e: any) => {
     if (wrapperRef?.current) {
@@ -25,8 +29,8 @@ export const HistoryWrapper = ({items}: ItemType) => {
     if (!result.destination) {
       return;
     }
-    const items = reorderArray(list, result.source.index, result.destination.index);
-    setList(items);
+    const items = reorderArray(historyItems || [], result.source.index, result.destination.index);
+    dispatch(jsonHistoryUpdate(items));
   };
 
   return (
@@ -35,10 +39,11 @@ export const HistoryWrapper = ({items}: ItemType) => {
         <ItemsWrapper ref={wrapperRef} onWheel={onWheel}>
           <Droppable droppableId={'list'} direction="horizontal">
             {(provided) => (
-              <div ref={provided.innerRef} {...provided.droppableProps} style={{display: 'flex', gap: '10px'}}>
-                {list.map((item, index) => (
-                  <HistoryItem status={item.status} name={item.name} id={index} key={index} />
+              <div ref={provided.innerRef} {...provided.droppableProps} style={{display: 'flex', gap: '10px', width: 'fit-content'}}>
+                {historyItems?.map((item, index) => (
+                  <HistoryItem status={item.status} name={item.action} id={index} key={index} />
                 ))}
+                {provided.placeholder}
               </div>
             )}
           </Droppable>
@@ -56,6 +61,7 @@ export const HistoryWrapper = ({items}: ItemType) => {
 
 const Wrapper = styled.div`
   display: flex;
+  justify-content: flex-end;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 `;
 

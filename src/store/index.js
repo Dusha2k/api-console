@@ -25,6 +25,7 @@ function configureStore(initialState = {}) {
   const store = createStore(
     combineReducers({
       auth: persistReducer(persistConfig, rootReducer.auth),
+      apiHistory: persistReducer(persistConfig, rootReducer.sendJson),
     }),
     initialState,
     bindMiddleware([sagaMiddleware])

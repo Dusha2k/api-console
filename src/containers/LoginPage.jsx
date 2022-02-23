@@ -83,6 +83,7 @@ function LoginPage({history}) {
   }, [isLoggedIn]);
 
   const fetchLogin = (login, sublogin, password) => {
+    console.log('zdarova');
     dispatch(
       authenticate({
         login,
@@ -90,6 +91,7 @@ function LoginPage({history}) {
         password,
       })
     );
+    console.log('poka');
   };
 
   const handleSubmit = (event) => {

@@ -7,7 +7,7 @@ import {authenticateSuccess, authenticateFailure, logout} from 'src/store/action
 export function* authenticateCheckSaga() {
   try {
     yield api.sendsay.request({
-      action: 'pong',
+      action: 'sys.settings.get',
     });
   } catch (error) {
     if (error.id === 'error/auth/failed') {
@@ -17,6 +17,7 @@ export function* authenticateCheckSaga() {
 }
 
 export function* authenticateSaga({payload}) {
+  console.log('auth saga start');
   const response = yield api.sendsay
     .login({
       login: payload.login,
@@ -43,10 +44,12 @@ export function* authenticateSaga({payload}) {
       })
     );
   }
+  console.log('auth saga end');
 }
 
 export function* logoutSaga() {
-  yield put(logout());
+  console.log('this is saga');
+  yield put(logout);
   document.cookie = '';
 }
 

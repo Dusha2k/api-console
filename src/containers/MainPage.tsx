@@ -1,74 +1,70 @@
-import React, {useEffect} from 'react';
-import {useSelector} from 'react-redux';
+import React, {useEffect, useRef} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import {useHistory} from 'react-router-dom';
 import styled from 'styled-components';
 import {ApiHistory} from '../components/ApiHistory';
-
-const myArr = [
-  {status: 'failure', name: 'track'},
-  {status: 'success', name: 'mom'},
-  {status: 'failure', name: 'like'},
-  {status: 'failure', name: 'sandwioch'},
-  {status: 'failure', name: 'ololo'},
-  {status: 'success', name: 'track'},
-  {status: 'failure', name: 'track'},
-  {status: 'failure', name: 'sandwioch'},
-  {status: 'success', name: 'track'},
-  {status: 'failure', name: 'track'},
-  {status: 'failure', name: 'ololo'},
-  {status: 'failure', name: 'like'},
-  {status: 'failure', name: 'sandwioch'},
-  {status: 'success', name: 'track'},
-  {status: 'failure', name: 'like'},
-  {status: 'success', name: 'ololo'},
-  {status: 'failure', name: 'track'},
-  {status: 'failure', name: 'like'},
-  {status: 'success', name: 'sandwioch'},
-  {status: 'failure', name: 'track'},
-];
+import {CodePanel} from '../components/CodePanel';
+import {sendJson} from '../store/actions';
+import {Button} from '../components/Button';
+import {logout} from '../store/actions/auth';
 
 const MainPage = () => {
+  const dispatch = useDispatch();
   const history = useHistory();
   const isLoggedIn = useSelector((state: {auth: {sessionKey: string | null}}) => !!state.auth.sessionKey?.length);
-  const userInfo = useSelector((state: {auth: {login: string; subLogin: string | null}}) => ({
-    login: state.auth.login,
-    subLogin: state.auth.subLogin,
-  }));
+  const userLogin = useSelector((state: {auth: {login: string; subLogin: string | null}}) => state.auth.login);
+  const userSubLogin = useSelector((state: {auth: {login: string; subLogin: string | null}}) => state.auth.subLogin);
+
+  const firstRef: any = useRef(null);
 
   useEffect(() => {
     if (!isLoggedIn) history.push('/');
   }, [isLoggedIn]);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    history.push('/');
+  };
+
+  const handleSendJson = () => {
+    if (firstRef.current) {
+      try {
+        JSON.parse(firstRef.current.value);
+        dispatch(sendJson(JSON.parse(JSON.stringify(firstRef.current.value, null, 2))));
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
 
   return (
     <Wrapper>
       <Console>
         <Header>
           <div className="left-side">
-            <svg width="115" height="30" viewBox="0 0 115 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="115" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="15" cy="15" r="15" fill="#C4C4C4" />
               <circle cx="70" cy="15" r="15" fill="#C4C4C4" />
-              <rect x="35" width="15" height="30" fill="#C4C4C4" />
-              <path d="M100 0H115L100 30H85L100 0Z" fill="#C4C4C4" />
+              <path fill="#C4C4C4" d="M35 0h15v30H35zM100 0h15l-15 30H85l15-30Z" />
             </svg>
             <span>API-консолька</span>
           </div>
           <div className="right-side">
             <div className="right-side__info">
-              {userInfo.login} <span>:</span> {userInfo.subLogin ? userInfo.subLogin : 'sublogin'}
+              {userLogin}
+              <span>:</span>
+              {userSubLogin ? userSubLogin : 'Сублогин'}
             </div>
-            <div className="right-side__logout">
+            <div
+              className="right-side__logout"
+              onClick={() => {
+                handleLogout();
+              }}
+            >
               <span>Выйти</span>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g opacity="0.8">
-                  <path
-                    d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9"
-                    stroke="#0D0D0D"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path d="M16 17L21 12L16 7" stroke="#0D0D0D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M21 12H9" stroke="#0D0D0D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g opacity=".8" stroke="#0D0D0D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
                 </g>
               </svg>
             </div>
@@ -83,7 +79,22 @@ const MainPage = () => {
             </FullScreenImg>
           </div>
         </Header>
-        <ApiHistory items={myArr} />
+        <ApiHistory myRef={firstRef} />
+        <CodePanel myRef={firstRef} />
+        <Footer>
+          <Button text={'Отправить'} disabled={false} loading={false} type={'button'} onClick={handleSendJson} />
+          <a href="https://github.com/Dusha2k" target="_blank" rel="noreferrer noopener">
+            github.com/Dusha2k
+          </a>
+          <div onClick={() => (firstRef.current.value = JSON.stringify(JSON.parse(firstRef.current.value), null, 2))}>
+            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g opacity=".8" stroke="#0D0D0D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 10H7M11 6H3M12 14H7M7 18H3" />
+              </g>
+            </svg>
+            Форматировать
+          </div>
+        </Footer>
       </Console>
     </Wrapper>
   );
@@ -136,9 +147,7 @@ const Header = styled.div`
       display: flex;
       align-items: center;
       gap: 8px;
-      svg {
-        padding-top: 3px;
-      }
+      cursor: pointer;
     }
   }
 `;
@@ -146,6 +155,31 @@ const Header = styled.div`
 const FullScreenImg = styled.svg`
   cursor: pointer;
   padding-top: 3px;
+`;
+
+const Panel = styled.div`
+  position: relative;
+  height: 400px;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #fff;
+  > a {
+    font-size: 16px;
+    line-height: 20px;
+    color: #999999;
+    text-decoration: none;
+  }
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
 `;
 
 export {MainPage};
