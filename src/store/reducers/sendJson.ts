@@ -6,7 +6,7 @@ export type StateType = {
   historyRequests: Array<any>;
   currentJsonTemplate: string | null;
   autoSendJson: boolean;
-  lastTemplateJson: Array<string>;
+  lastTemplateJson: {template: Array<string>; status: string | null};
 };
 
 const initialState: StateType = {
@@ -14,7 +14,7 @@ const initialState: StateType = {
   historyRequests: [],
   currentJsonTemplate: null,
   autoSendJson: false,
-  lastTemplateJson: ['', ''],
+  lastTemplateJson: {template: ['', ''], status: null},
 };
 
 export default {
@@ -57,7 +57,7 @@ export default {
       [ActionTypes.SET_LAST_TEMPLATE]: (state, {payload}) => {
         return {
           ...state,
-          lastTemplateJson: [payload[0], payload[1]],
+          lastTemplateJson: payload,
         };
       },
     },

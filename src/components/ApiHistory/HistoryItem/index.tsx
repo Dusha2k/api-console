@@ -25,7 +25,9 @@ export const HistoryItem = ({
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          onClick={() => dispatch(setLastTemplate([JSON.stringify(body, null, 2), JSON.stringify(response, null, 2)]))}
+          onClick={() =>
+            dispatch(setLastTemplate({template: [JSON.stringify(body, null, 2), JSON.stringify(response, null, 2)], status: status}))
+          }
         >
           <div style={{backgroundColor: status === 'fail' ? 'red' : 'green', width: '10px', height: '10px', borderRadius: '50%'}} />
           <div style={{textAlign: 'center'}}>{action ? action : 'undefined'}</div>

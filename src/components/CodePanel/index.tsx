@@ -4,26 +4,43 @@ import styled from 'styled-components';
 import dotsImg from '../../assets/dots.svg';
 import {useSelector} from 'react-redux';
 
-export const CodePanel = ({myRef}: any) => {
-  const [initialSize, setInitialSize] = useState(200);
+export const CodePanel = ({leftCodePanelRef}: any) => {
   const secondRef: any = useRef(null);
-  const templateJson = useSelector((state: {apiHistory: {lastTemplateJson: Array<string>}}) => state.apiHistory.lastTemplateJson);
+  const wrapperRef: any = useRef(null);
+  const templateJson = useSelector(
+    (state: {apiHistory: {lastTemplateJson: {template: Array<string>; status: string | null}}}) => state.apiHistory.lastTemplateJson
+  );
+  const fullScreenMode = useSelector((state: {userSettings: {fullScreen: boolean}}) => state.userSettings.fullScreen);
 
   useEffect(() => {
     if (secondRef) {
-      myRef.current.value = templateJson?.[0];
-      secondRef.current.value = templateJson?.[1];
+      leftCodePanelRef.current.value = templateJson.template?.[0];
+      secondRef.current.value = templateJson.template?.[1];
     }
   }, [templateJson]);
 
+  useEffect(() => {
+    if (secondRef?.current) {
+      secondRef.current.style.width = `${localStorage.getItem('codePanel')}px`;
+    }
+  }, []);
+
   return (
-    <Wrapper>
-      <SplitPane style={{padding: '10px 15px'}} minSize={'200px'} split="vertical" primary="second" onChange={(e) => setInitialSize(e)}>
+    <Wrapper ref={wrapperRef}>
+      <SplitPane
+        style={{padding: '10px 15px'}}
+        split="vertical"
+        primary="second"
+        maxSize={fullScreenMode ? 1600 : 800}
+        defaultSize={Number(localStorage.getItem('codePanel'))}
+        onChange={(e) => (secondRef.current.style.width = `${e}px`)}
+        onDragFinished={(e) => localStorage.setItem('codePanel', e.toString())}
+      >
         <div style={{height: '100%'}}>
           <PanelLabel>Запрос:</PanelLabel>
           <TextArea
             style={{width: '100%'}}
-            ref={myRef}
+            ref={leftCodePanelRef}
             onKeyDown={(e) => {
               if (e.key === 'Tab') {
                 e.preventDefault();
@@ -35,9 +52,9 @@ export const CodePanel = ({myRef}: any) => {
         <div style={{height: '100%'}}>
           <PanelLabel>Ответ:</PanelLabel>
           <TextArea
+            className={templateJson.status ? templateJson.status : ''}
             ref={secondRef}
             readOnly={true}
-            style={{width: `${initialSize}px`}}
             onKeyDown={(e) => {
               if (e.key === 'Tab') {
                 e.preventDefault();
@@ -82,7 +99,8 @@ const Wrapper = styled.div`
     border-right: 5px solid rgba(255, 255, 255, 0);
     cursor: col-resize;
   }
-  .invalid-json {
+  .invalid-json,
+  .fail {
     border: 1px solid #cf2c00;
     box-shadow: 0px 0px 5px rgba(207, 44, 0, 0.5);
   }
