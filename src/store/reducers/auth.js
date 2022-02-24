@@ -35,18 +35,16 @@ export default {
         return {
           ...state,
           loading: false,
-          sessionKey: null,
-          login: null,
-          subLogin: null,
           loginError: {id: id, explain: explain},
         };
       },
       [ActionTypes.LOGOUT]: (state) => {
-        console.log('hello im here');
+        //localStorage.removeItem('persist:root');
         return {
           ...state,
-          loading: false,
           sessionKey: null,
+          login: null,
+          subLogin: null,
         };
       },
     },

@@ -1,7 +1,7 @@
 import {ActionTypes} from '../constants';
 import {handleActions} from 'redux-actions';
 
-const initialState: {fullScreen: boolean} = {
+const initialState: {fullScreen: boolean | null} = {
   fullScreen: false,
 };
 

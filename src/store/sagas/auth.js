@@ -49,7 +49,7 @@ export function* authenticateSaga({payload}) {
 
 export function* logoutSaga() {
   console.log('this is saga');
-  yield put(logout);
+  yield put(logout());
   document.cookie = '';
 }
 

@@ -15,4 +15,5 @@ export const ActionTypes = keyMirror({
   JSON_HISTORY_UPDATE: undefined,
   SET_LAST_TEMPLATE: undefined,
   SWITCH_SCREEN_MODE: undefined,
+  DELETE_HISTORY_REQUEST: undefined,
 });

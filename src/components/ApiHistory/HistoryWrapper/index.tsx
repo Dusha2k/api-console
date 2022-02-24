@@ -15,6 +15,7 @@ export const HistoryWrapper = () => {
   const historyItems = useSelector((state: {apiHistory: {historyRequests: Array<any> | null}}) => state.apiHistory.historyRequests);
 
   const onWheel = (e: any) => {
+    if (e.currentTarget.outerHTML.toString().includes('openedDropdown')) return;
     if (wrapperRef?.current) {
       const el = wrapperRef.current;
       if (e.deltaY == 0) return;
@@ -93,6 +94,7 @@ const ClearButton = styled.div`
   position: relative;
   cursor: pointer;
   &:before {
+    pointer-events: none;
     content: ' ';
     height: 100%;
     position: absolute;

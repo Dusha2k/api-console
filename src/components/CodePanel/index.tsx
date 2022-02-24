@@ -25,6 +25,14 @@ export const CodePanel = ({leftCodePanelRef}: any) => {
     }
   }, []);
 
+  const getSizeForPanel = () => {
+    const currentSize = Number(localStorage.getItem('codePanel'));
+    if (!fullScreenMode) {
+      return currentSize > 800 ? 800 : currentSize;
+    }
+    return currentSize;
+  };
+
   return (
     <Wrapper ref={wrapperRef}>
       <SplitPane
@@ -32,7 +40,8 @@ export const CodePanel = ({leftCodePanelRef}: any) => {
         split="vertical"
         primary="second"
         maxSize={fullScreenMode ? 1600 : 800}
-        defaultSize={Number(localStorage.getItem('codePanel'))}
+        minSize={200}
+        defaultSize={getSizeForPanel()}
         onChange={(e) => (secondRef.current.style.width = `${e}px`)}
         onDragFinished={(e) => localStorage.setItem('codePanel', e.toString())}
       >
@@ -74,12 +83,14 @@ const TextArea = styled.textarea`
   resize: none;
   border-radius: 5px;
   border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 10px;
 `;
 
 const Wrapper = styled.div`
   height: 440px;
   position: relative;
   background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   .Resizer {
     z-index: 1;
     -moz-box-sizing: border-box;
