@@ -1,3 +1,3 @@
 export * from '../actions/auth';
-export * from '../actions/sendJson';
+export * from './jsonResponse';
 export * from '../actions/userSettings';

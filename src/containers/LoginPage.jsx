@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import styled from 'styled-components';
@@ -80,10 +80,10 @@ function LoginPage({history}) {
     if (isLoggedIn) {
       history.push('/console');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
   const fetchLogin = (login, sublogin, password) => {
-    console.log('zdarova');
     dispatch(
       authenticate({
         login,
@@ -91,7 +91,6 @@ function LoginPage({history}) {
         password,
       })
     );
-    console.log('poka');
   };
 
   const handleSubmit = (event) => {

@@ -4,11 +4,11 @@ import styled from 'styled-components';
 import {useDispatch, useSelector} from 'react-redux';
 import {sendJson} from '../store/actions';
 
-export const MainFooter = ({leftCodePanelRef}: {leftCodePanelRef: any}) => {
+export const MainFooter = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObject<HTMLTextAreaElement>}) => {
   const dispatch = useDispatch();
   const loading = useSelector((state: {apiHistory: {loading: boolean}}) => state.apiHistory.loading);
 
-  const handleSendJson = (e: any) => {
+  const handleSendJson = () => {
     if (leftCodePanelRef.current) {
       try {
         JSON.parse(leftCodePanelRef.current.value);
@@ -30,7 +30,7 @@ export const MainFooter = ({leftCodePanelRef}: {leftCodePanelRef: any}) => {
         className="footer__format"
         onClick={(e) => {
           e.preventDefault();
-          leftCodePanelRef.current.value = JSON.stringify(JSON.parse(leftCodePanelRef.current.value), null, 2);
+          leftCodePanelRef!.current!.value = JSON.stringify(JSON.parse(leftCodePanelRef?.current!.value), null, 2);
           e.currentTarget.blur();
         }}
       >

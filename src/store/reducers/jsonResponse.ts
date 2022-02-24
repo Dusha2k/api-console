@@ -1,9 +1,16 @@
 import {ActionTypes} from '../constants';
 import {handleActions} from 'redux-actions';
 
+export interface IHistoryRequest {
+  action: string;
+  body: object | string;
+  response: object | string;
+  status: string;
+}
+
 export type StateType = {
   loading: boolean;
-  historyRequests: Array<any>;
+  historyRequests: Array<IHistoryRequest>;
   currentJsonTemplate: string | null;
   autoSendJson: boolean;
   lastTemplateJson: {template: Array<string>; status: string | null};
@@ -17,7 +24,7 @@ const initialState: StateType = {
   lastTemplateJson: {template: ['', ''], status: null},
 };
 
-const returnUniqueArray = (arr: any, item: any) => {
+const returnUniqueArray = (arr: Array<IHistoryRequest>, item: IHistoryRequest) => {
   let findIndex = null;
   const myArr = [...arr];
   for (let i = 0; i < arr.length; i++) {

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {MutableRefObject, RefObject, useEffect, useRef, useState} from 'react';
 import styled, {keyframes} from 'styled-components';
 import {Draggable} from 'react-beautiful-dnd';
 import {useDispatch} from 'react-redux';
@@ -22,31 +22,23 @@ export const HistoryItem = ({
   const dispatch = useDispatch();
   const [copied, setCopied] = useState<boolean>(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const itemRef: any = useRef();
-  const dropdownRef = useRef();
+
+  const itemRef: MutableRefObject<SVGSVGElement | null> = useRef(null);
+  const dropdownRef: RefObject<HTMLDivElement> | null | undefined = useRef(null);
+
   useOnClickOutside([itemRef, dropdownRef], () => setDropdownOpen(false));
   const jsonBody = JSON.stringify(body, null, 2);
   const jsonResponse = JSON.stringify(response, null, 2);
-
-  const handleCopied = () => {
-    setCopied(true);
-    navigator.clipboard.writeText(jsonBody);
-    setTimeout(() => {
-      setCopied(false);
-    }, 500);
-  };
-
-  useEffect(() => {
-    console.log(itemRef.current?.getBoundingClientRect());
-  }, [itemRef]);
 
   const dispatchLastTemplate = () => {
     dispatch(setLastTemplate({template: [jsonBody, jsonResponse], status: status}));
   };
 
-  const handleSendJson = () => {
-    dispatchLastTemplate();
-    dispatch(sendJson(JSON.stringify(body, null, 2)));
+  const dropDownActions = (event: any, actionFunc: () => void) => {
+    event.stopPropagation();
+    event.preventDefault();
+    actionFunc();
+    setDropdownOpen(false);
   };
 
   return (
@@ -66,7 +58,7 @@ export const HistoryItem = ({
               e.preventDefault();
               setDropdownOpen(!dropdownOpen);
             }}
-            ref={itemRef as any}
+            ref={itemRef}
           >
             <g clipPath="url(#clip0)">
               <circle cx="3" cy="2" r="2" fill="black" fillOpacity="0.2" />
@@ -83,28 +75,33 @@ export const HistoryItem = ({
           {dropdownOpen && (
             <>
               <DropdownWrapper
-                ref={dropdownRef as any}
+                ref={dropdownRef}
                 className="openedDropdown"
                 style={{
                   position: 'fixed',
-                  left: `${itemRef.current?.getBoundingClientRect().x - 80}px`,
-                  top: `${itemRef.current?.getBoundingClientRect().y + 25}px`,
+                  left: `${itemRef!.current!.getBoundingClientRect().x - 80}px`,
+                  top: `${itemRef!.current!.getBoundingClientRect().y + 25}px`,
                 }}
               >
                 <div
                   onClick={(e) => {
-                    e.stopPropagation();
-                    handleSendJson();
-                    setDropdownOpen(false);
+                    dropDownActions(e, () => {
+                      dispatchLastTemplate();
+                      dispatch(sendJson(JSON.stringify(body, null, 2)));
+                    });
                   }}
                 >
                   Выполнить
                 </div>
                 <div
                   onClick={(e) => {
-                    e.stopPropagation();
-                    handleCopied();
-                    setDropdownOpen(false);
+                    dropDownActions(e, () => {
+                      setCopied(true);
+                      navigator.clipboard.writeText(jsonBody);
+                      setTimeout(() => {
+                        setCopied(false);
+                      }, 500);
+                    });
                   }}
                 >
                   Скопировать
@@ -112,9 +109,7 @@ export const HistoryItem = ({
                 <span />
                 <div
                   onClick={(e) => {
-                    e.stopPropagation();
-                    dispatch(deleteHistoryRequest(body));
-                    setDropdownOpen(false);
+                    dropDownActions(e, () => dispatch(deleteHistoryRequest(body)));
                   }}
                 >
                   Удалить

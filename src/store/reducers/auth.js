@@ -14,7 +14,6 @@ export default {
   auth: handleActions(
     {
       [ActionTypes.AUTHENTICATE]: (state) => {
-        console.log('auth');
         return {
           ...state,
           loading: true,

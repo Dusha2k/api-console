@@ -1,14 +1,14 @@
 import {useEffect} from 'react';
 
-export function useOnClickOutside(refs, handleClick, ignoreClass) {
+export function useOnClickOutside(refs: Array<React.RefObject<any>>, handleClick: (e: MouseEvent) => void, ignoreClass?: string) {
   useEffect(() => {
-    function handleClickOutside(event) {
+    function handleClickOutside(event: any) {
       if (refs.every((ref) => ref.current && !ref.current.contains(event.target))) {
         let triggerClick = true;
         const ignoreClasses = ignoreClass?.split(' ');
 
         if (ignoreClasses?.length) {
-          const targetButton = event?.target.closest('button');
+          const targetButton = event!.target!.closest('button');
           if (targetButton) {
             ignoreClasses.forEach((item) => {
               if (targetButton.className.includes(item)) triggerClick = false;
@@ -27,5 +27,6 @@ export function useOnClickOutside(refs, handleClick, ignoreClass) {
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, refs);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refs]);
 }

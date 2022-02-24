@@ -5,7 +5,7 @@ import {logout} from '../store/actions';
 import styled from 'styled-components';
 import {switchScreenMode as switchScreenAction} from '../store/actions/userSettings';
 
-const MainHeader = ({consoleRef}: {consoleRef: any}) => {
+const MainHeader = ({consoleRef}: {consoleRef: React.RefObject<HTMLDivElement>}) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const userLogin = useSelector((state: {auth: {login: string; subLogin: string | null}}) => state.auth.login);
@@ -24,6 +24,7 @@ const MainHeader = ({consoleRef}: {consoleRef: any}) => {
         !fullScreenMode ? `${classNames.replace('fullscreen-mode', '')}` : `${classNames} fullscreen-mode`
       }`;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fullScreenMode]);
 
   const switchScreenMode = () => {

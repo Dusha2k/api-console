@@ -1,27 +1,27 @@
-import React, {useEffect, useRef, useState} from 'react';
-import SplitPane, {Pane} from 'react-split-pane';
+import React, {useEffect, useRef} from 'react';
+import SplitPane from 'react-split-pane';
 import styled from 'styled-components';
 import dotsImg from '../../assets/dots.svg';
 import {useSelector} from 'react-redux';
 
-export const CodePanel = ({leftCodePanelRef}: any) => {
-  const secondRef: any = useRef(null);
-  const wrapperRef: any = useRef(null);
+export const CodePanel = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObject<HTMLTextAreaElement>}) => {
+  const rightCodePanelRef: React.RefObject<HTMLTextAreaElement> = useRef(null);
+  const wrapperRef: React.RefObject<HTMLDivElement> = useRef(null);
   const templateJson = useSelector(
     (state: {apiHistory: {lastTemplateJson: {template: Array<string>; status: string | null}}}) => state.apiHistory.lastTemplateJson
   );
   const fullScreenMode = useSelector((state: {userSettings: {fullScreen: boolean}}) => state.userSettings.fullScreen);
 
   useEffect(() => {
-    if (secondRef) {
+    if (rightCodePanelRef.current && leftCodePanelRef.current) {
       leftCodePanelRef.current.value = templateJson.template?.[0];
-      secondRef.current.value = templateJson.template?.[1];
-    }
+      rightCodePanelRef.current.value = templateJson.template?.[1];
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [templateJson]);
 
   useEffect(() => {
-    if (secondRef?.current) {
-      secondRef.current.style.width = `${localStorage.getItem('codePanel')}px`;
+    if (rightCodePanelRef?.current) {
+      rightCodePanelRef.current.style.width = `${localStorage.getItem('codePanel')}px`;
     }
   }, []);
 
@@ -42,7 +42,7 @@ export const CodePanel = ({leftCodePanelRef}: any) => {
         maxSize={fullScreenMode ? 1600 : 800}
         minSize={200}
         defaultSize={getSizeForPanel()}
-        onChange={(e) => (secondRef.current.style.width = `${e}px`)}
+        onChange={(e) => (rightCodePanelRef!.current!.style.width = `${e}px`)}
         onDragFinished={(e) => localStorage.setItem('codePanel', e.toString())}
       >
         <div style={{height: '100%'}}>
@@ -62,7 +62,7 @@ export const CodePanel = ({leftCodePanelRef}: any) => {
           <PanelLabel>Ответ:</PanelLabel>
           <TextArea
             className={templateJson.status ? templateJson.status : ''}
-            ref={secondRef}
+            ref={rightCodePanelRef}
             readOnly={true}
             onKeyDown={(e) => {
               if (e.key === 'Tab') {

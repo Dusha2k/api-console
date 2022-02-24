@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {HistoryItem} from '../HistoryItem';
 import styled from 'styled-components';
 import {DragDropContext, Droppable, DropResult} from 'react-beautiful-dnd';
@@ -6,19 +6,20 @@ import {reorderArray} from '../../../helpers/functions';
 import {useSelector} from 'react-redux';
 import {useDispatch} from 'react-redux';
 import {jsonHistoryUpdate} from '../../../store/actions';
-
-type ItemType = {items: Array<{name: string; status: string}>};
+import {IHistoryRequest} from '../../../store/reducers/jsonResponse';
 
 export const HistoryWrapper = () => {
   const dispatch = useDispatch();
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const historyItems = useSelector((state: {apiHistory: {historyRequests: Array<any> | null}}) => state.apiHistory.historyRequests);
+  const historyItems = useSelector(
+    (state: {apiHistory: {historyRequests: Array<IHistoryRequest> | null}}) => state.apiHistory.historyRequests
+  );
 
   const onWheel = (e: any) => {
     if (e.currentTarget.outerHTML.toString().includes('openedDropdown')) return;
     if (wrapperRef?.current) {
       const el = wrapperRef.current;
-      if (e.deltaY == 0) return;
+      if (e.deltaY === 0) return;
       el.scrollTo({
         left: el.scrollLeft + e.deltaY * 1.5,
         behavior: 'smooth',
@@ -45,11 +46,11 @@ export const HistoryWrapper = () => {
                   return (
                     <HistoryItem
                       status={item.status}
-                      body={item.body}
+                      body={item.body as string}
                       action={item.action}
                       id={index}
                       key={index}
-                      response={item.response}
+                      response={item.response as string}
                     />
                   );
                 })}

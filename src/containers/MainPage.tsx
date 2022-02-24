@@ -12,11 +12,12 @@ const MainPage = () => {
 
   const isLoggedIn = useSelector((state: {auth: {sessionKey: string | null}}) => !!state.auth.sessionKey?.length);
 
-  const leftCodePanelRef: any = useRef(null);
-  const consoleRef: any = useRef(null);
+  const leftCodePanelRef: React.RefObject<HTMLTextAreaElement> = useRef(null);
+  const consoleRef: React.RefObject<HTMLDivElement> = useRef(null);
 
   useEffect(() => {
     if (!isLoggedIn) history.push('/');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
   return (

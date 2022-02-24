@@ -17,7 +17,6 @@ export function* authenticateCheckSaga() {
 }
 
 export function* authenticateSaga({payload}) {
-  console.log('auth saga start');
   const response = yield api.sendsay
     .login({
       login: payload.login,
@@ -44,11 +43,9 @@ export function* authenticateSaga({payload}) {
       })
     );
   }
-  console.log('auth saga end');
 }
 
 export function* logoutSaga() {
-  console.log('this is saga');
   yield put(logout());
   document.cookie = '';
 }
