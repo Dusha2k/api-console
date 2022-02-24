@@ -1,4 +1,4 @@
-import React, {MutableRefObject, RefObject, useEffect, useRef, useState} from 'react';
+import React, {MutableRefObject, RefObject, useRef, useState} from 'react';
 import styled, {keyframes} from 'styled-components';
 import {Draggable} from 'react-beautiful-dnd';
 import {useDispatch} from 'react-redux';

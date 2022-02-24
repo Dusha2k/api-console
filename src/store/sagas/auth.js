@@ -46,7 +46,7 @@ export function* authenticateSaga({payload}) {
 }
 
 export function* logoutSaga() {
-  yield put(logout());
+  yield put(authenticateFailure());
   document.cookie = '';
 }
 

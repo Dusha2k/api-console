@@ -30,11 +30,13 @@ export default {
         };
       },
       [ActionTypes.AUTHENTICATE_FAILURE]: (state, {payload}) => {
-        const {explain, id} = payload.loginError;
         return {
           ...state,
           loading: false,
-          loginError: {id: id, explain: explain},
+          sessionKey: null,
+          login: null,
+          subLogin: null,
+          loginError: payload ? {id: payload.loginError.id, explain: payload.loginError.explain} : null,
         };
       },
       [ActionTypes.LOGOUT]: (state) => {
