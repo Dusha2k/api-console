@@ -6,7 +6,8 @@ export const initialState = {
   loading: false,
   sessionKey: null,
   login: null,
-  sublogin: null,
+  subLogin: null,
+  loginError: null,
 };
 
 export default {
@@ -24,22 +25,27 @@ export default {
           loading: false,
           sessionKey: payload.sessionKey,
           login: payload.login,
-          sublogin: payload.sublogin,
+          subLogin: payload.sublogin,
+          loginError: null,
         };
       },
-      [ActionTypes.AUTHENTICATE_FAILURE]: (state) => {
-        return {
-          ...state,
-          sessionKey: null,
-          login: null,
-          sublogin: null,
-        };
-      },
-      [ActionTypes.LOGOUT]: (state) => {
+      [ActionTypes.AUTHENTICATE_FAILURE]: (state, {payload}) => {
         return {
           ...state,
           loading: false,
           sessionKey: null,
+          login: null,
+          subLogin: null,
+          loginError: payload ? {id: payload.loginError.id, explain: payload.loginError.explain} : null,
+        };
+      },
+      [ActionTypes.LOGOUT]: (state) => {
+        //localStorage.removeItem('persist:root');
+        return {
+          ...state,
+          sessionKey: null,
+          login: null,
+          subLogin: null,
         };
       },
     },

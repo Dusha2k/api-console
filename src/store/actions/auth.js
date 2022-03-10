@@ -1,6 +1,6 @@
 import {createActions} from 'redux-actions';
 
-import {ActionTypes} from 'src/store/constants';
+import {ActionTypes} from '../constants';
 
 export const {authenticate, authenticateSuccess, authenticateCheck, authenticateFailure, logout} = createActions({
   [ActionTypes.AUTHENTICATE]: (payload) => payload,

@@ -2,12 +2,12 @@ import {all, put, call, takeLatest} from 'redux-saga/effects';
 import api from 'src/helpers/sendsay';
 
 import {ActionTypes} from 'src/store/constants';
-import {authenticateSuccess, authenticateFailure} from 'src/store/actions/auth';
+import {authenticateSuccess, authenticateFailure, logout} from 'src/store/actions/auth';
 
 export function* authenticateCheckSaga() {
   try {
     yield api.sendsay.request({
-      action: 'pong',
+      action: 'sys.settings.get',
     });
   } catch (error) {
     if (error.id === 'error/auth/failed') {
@@ -17,10 +17,10 @@ export function* authenticateCheckSaga() {
 }
 
 export function* authenticateSaga({payload}) {
-  yield api.sendsay
+  const response = yield api.sendsay
     .login({
       login: payload.login,
-      sublogin: payload.sublogin,
+      subLogin: payload.sublogin,
       password: payload.password,
     })
     .then(() => {
@@ -29,15 +29,20 @@ export function* authenticateSaga({payload}) {
     .catch((err) => {
       document.cookie = '';
       console.log('err', err);
+      return err;
     });
 
-  yield put(
-    authenticateSuccess({
-      sessionKey: api.sendsay.session,
-      login: payload.login,
-      sublogin: payload.sublogin,
-    })
-  );
+  if (response) {
+    yield put(authenticateFailure({loginError: response}));
+  } else {
+    yield put(
+      authenticateSuccess({
+        sessionKey: api.sendsay.session,
+        login: payload.login,
+        subLogin: payload.sublogin,
+      })
+    );
+  }
 }
 
 export function* logoutSaga() {

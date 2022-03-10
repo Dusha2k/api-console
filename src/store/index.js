@@ -10,6 +10,7 @@ const sagaMiddleware = createSagaMiddleware();
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['loginError', 'loading'],
 };
 
 const bindMiddleware = (middleware) => {
@@ -24,6 +25,8 @@ function configureStore(initialState = {}) {
   const store = createStore(
     combineReducers({
       auth: persistReducer(persistConfig, rootReducer.auth),
+      apiHistory: persistReducer(persistConfig, rootReducer.sendJson),
+      userSettings: persistReducer(persistConfig, rootReducer.userSettings),
     }),
     initialState,
     bindMiddleware([sagaMiddleware])
