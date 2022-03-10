@@ -3,6 +3,7 @@ import SplitPane from 'react-split-pane';
 import styled from 'styled-components';
 import dotsImg from '../../assets/dots.svg';
 import {useSelector} from 'react-redux';
+import {IHistoryRequest} from '../../store/reducers/jsonResponse';
 
 export const CodePanel = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObject<HTMLTextAreaElement>}) => {
   const rightCodePanelRef: React.RefObject<HTMLTextAreaElement> = useRef(null);
@@ -10,6 +11,7 @@ export const CodePanel = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObject
   const templateJson = useSelector(
     (state: {apiHistory: {lastTemplateJson: {template: Array<string>; status: string | null}}}) => state.apiHistory.lastTemplateJson
   );
+  const lastRequest = useSelector((state: {apiHistory: {historyRequests: Array<IHistoryRequest>}}) => state.apiHistory.historyRequests);
   const fullScreenMode = useSelector((state: {userSettings: {fullScreen: boolean}}) => state.userSettings.fullScreen);
 
   useEffect(() => {
@@ -20,6 +22,10 @@ export const CodePanel = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObject
   }, [templateJson]);
 
   useEffect(() => {
+    if (lastRequest && rightCodePanelRef.current) rightCodePanelRef.current.value = JSON.stringify(lastRequest[0].response, null, 2);
+  }, [lastRequest]);
+
+  useEffect(() => {
     if (rightCodePanelRef?.current) {
       rightCodePanelRef.current.style.width = `${localStorage.getItem('codePanel')}px`;
     }
@@ -28,6 +34,7 @@ export const CodePanel = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObject
   const getSizeForPanel = () => {
     const currentSize = Number(localStorage.getItem('codePanel'));
     if (!fullScreenMode) {
+      if (currentSize === 0) return 500;
       return currentSize > 800 ? 800 : currentSize;
     }
     return currentSize;
@@ -62,6 +69,7 @@ export const CodePanel = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObject
           <PanelLabel>Ответ:</PanelLabel>
           <TextArea
             className={templateJson.status ? templateJson.status : ''}
+            style={{width: '100%'}}
             ref={rightCodePanelRef}
             readOnly={true}
             onKeyDown={(e) => {
