@@ -30,3 +30,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#root .loader .lds-spinner div:after {
+  background: #cacaca;
+}

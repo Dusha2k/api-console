@@ -8,4 +8,12 @@ export const ActionTypes = keyMirror({
   LOGOUT: undefined,
   LOGOUT_SUCCESS: undefined,
   LOGOUT_FAILURE: undefined,
+
+  SEND_JSON: undefined,
+  SEND_JSON_SUCCESS: undefined,
+  SEND_JSON_FAILURE: undefined,
+  JSON_HISTORY_UPDATE: undefined,
+  SET_LAST_TEMPLATE: undefined,
+  SWITCH_SCREEN_MODE: undefined,
+  DELETE_HISTORY_REQUEST: undefined,
 });
