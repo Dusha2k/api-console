@@ -22,19 +22,32 @@ export const CodePanel = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObject
   }, [templateJson]);
 
   useEffect(() => {
-    if (lastRequest && rightCodePanelRef.current) rightCodePanelRef.current.value = JSON.stringify(lastRequest[0].response, null, 2);
+    if (lastRequest?.length > 0 && rightCodePanelRef.current)
+      rightCodePanelRef.current.value = JSON.stringify(lastRequest[0]?.response, null, 2);
   }, [lastRequest]);
 
   useEffect(() => {
-    if (rightCodePanelRef?.current) {
-      rightCodePanelRef.current.style.width = `${localStorage.getItem('codePanel')}px`;
+    if (rightCodePanelRef.current) {
+      const panelWidth = rightCodePanelRef!.current.style.width.replace('px', '');
+      if (!fullScreenMode && Number(panelWidth) > 800) {
+        rightCodePanelRef.current.style.width = '800px';
+      } else if (fullScreenMode) {
+        rightCodePanelRef.current.style.width = '100%';
+      }
+    }
+  }, [fullScreenMode]);
+
+  useEffect(() => {
+    if (rightCodePanelRef?.current && localStorage.getItem('codePanel')) {
+      const storageWidth = localStorage.getItem('codePanel');
+      rightCodePanelRef.current.style.width = `${!fullScreenMode && Number(storageWidth) > 800 ? 800 : storageWidth}px`;
     }
   }, []);
 
   const getSizeForPanel = () => {
     const currentSize = Number(localStorage.getItem('codePanel'));
+    if (currentSize === 0) return 500;
     if (!fullScreenMode) {
-      if (currentSize === 0) return 500;
       return currentSize > 800 ? 800 : currentSize;
     }
     return currentSize;
@@ -69,8 +82,8 @@ export const CodePanel = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObject
           <PanelLabel>Ответ:</PanelLabel>
           <TextArea
             className={templateJson.status ? templateJson.status : ''}
-            style={{width: '100%'}}
             ref={rightCodePanelRef}
+            style={{width: '100%'}}
             readOnly={true}
             onKeyDown={(e) => {
               if (e.key === 'Tab') {
