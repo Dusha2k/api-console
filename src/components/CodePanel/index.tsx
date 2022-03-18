@@ -12,7 +12,7 @@ export const CodePanel = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObject
     (state: {apiHistory: {lastTemplateJson: {template: Array<string>; status: string | null}}}) => state.apiHistory.lastTemplateJson
   );
   const lastRequest = useSelector((state: {apiHistory: {historyRequests: Array<IHistoryRequest>}}) => state.apiHistory.historyRequests);
-  const fullScreenMode = useSelector((state: {userSettings: {fullScreen: boolean}}) => state.userSettings.fullScreen);
+  //const fullScreenMode = useSelector((state: {userSettings: {fullScreen: boolean}}) => state.userSettings.fullScreen);
 
   useEffect(() => {
     if (rightCodePanelRef.current && leftCodePanelRef.current) {
@@ -26,30 +26,27 @@ export const CodePanel = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObject
       rightCodePanelRef.current.value = JSON.stringify(lastRequest[0]?.response, null, 2);
   }, [lastRequest]);
 
-  useEffect(() => {
-    if (rightCodePanelRef.current) {
-      const panelWidth = rightCodePanelRef!.current.style.width.replace('px', '');
-      if (!fullScreenMode && Number(panelWidth) > 800) {
-        rightCodePanelRef.current.style.width = '800px';
-      } else if (fullScreenMode) {
-        rightCodePanelRef.current.style.width = '100%';
-      }
-    }
-  }, [fullScreenMode]);
+  //useEffect(() => {
+  //     if (rightCodePanelRef.current) {
+  //       const panelWidth = rightCodePanelRef!.current.style.width.replace('px', '');
+  //       if (!fullScreenMode && Number(panelWidth) > 800) {
+  //         rightCodePanelRef.current.style.width = '800px';
+  //       } else if (fullScreenMode) {
+  //         rightCodePanelRef.current.style.width = '100%';
+  //       }
+  //     }
+  //   }, [fullScreenMode]);
 
   useEffect(() => {
     if (rightCodePanelRef?.current && localStorage.getItem('codePanel')) {
       const storageWidth = localStorage.getItem('codePanel');
-      rightCodePanelRef.current.style.width = `${!fullScreenMode && Number(storageWidth) > 800 ? 800 : storageWidth}px`;
+      rightCodePanelRef.current.style.width = `${storageWidth}px`;
     }
   }, []);
 
   const getSizeForPanel = () => {
     const currentSize = Number(localStorage.getItem('codePanel'));
-    if (currentSize === 0) return 500;
-    if (!fullScreenMode) {
-      return currentSize > 800 ? 800 : currentSize;
-    }
+    if (currentSize === 0) return 800;
     return currentSize;
   };
 
@@ -59,8 +56,8 @@ export const CodePanel = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObject
         style={{padding: '10px 15px'}}
         split="vertical"
         primary="second"
-        maxSize={fullScreenMode ? 1600 : 800}
-        minSize={200}
+        maxSize={1500}
+        minSize={500}
         defaultSize={getSizeForPanel()}
         onChange={(e) => (rightCodePanelRef!.current!.style.width = `${e}px`)}
         onDragFinished={(e) => localStorage.setItem('codePanel', e.toString())}

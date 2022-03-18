@@ -22,7 +22,7 @@ const MainPage = () => {
 
   return (
     <Wrapper>
-      <Console ref={consoleRef}>
+      <Console ref={consoleRef} className={'fullscreen-mode'}>
         <MainHeader consoleRef={consoleRef} />
         <ApiHistory />
         <CodePanel leftCodePanelRef={leftCodePanelRef} />

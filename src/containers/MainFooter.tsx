@@ -11,8 +11,13 @@ export const MainFooter = ({leftCodePanelRef}: {leftCodePanelRef: React.RefObjec
   const handleSendJson = () => {
     if (leftCodePanelRef.current) {
       try {
-        JSON.parse(leftCodePanelRef.current.value);
-        dispatch(sendJson(JSON.parse(JSON.stringify(leftCodePanelRef.current.value, null, 2))));
+        const codeValue = leftCodePanelRef.current.value;
+        const parsedValue = JSON.parse(codeValue);
+
+        if (leftCodePanelRef.current.value !== JSON.stringify(parsedValue, null, 2)) throw new Error();
+
+        leftCodePanelRef.current.className = leftCodePanelRef.current.className.replace('invalid-json', '');
+        dispatch(sendJson(JSON.parse(JSON.stringify(codeValue, null, 2))));
       } catch (e) {
         console.log(e);
         leftCodePanelRef.current.className = `${leftCodePanelRef.current.className} invalid-json`;

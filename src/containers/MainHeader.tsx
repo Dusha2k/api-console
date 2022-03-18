@@ -17,17 +17,22 @@ const MainHeader = ({consoleRef}: {consoleRef: React.RefObject<HTMLDivElement>})
     history.push('/');
   };
 
-  useEffect(() => {
-    if (consoleRef?.current) {
-      const classNames = consoleRef.current.className;
-      consoleRef.current.className = `${
-        !fullScreenMode ? `${classNames.replace('fullscreen-mode', '')}` : `${classNames} fullscreen-mode`
-      }`;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fullScreenMode]);
+  //useEffect(() => {
+  //     if (consoleRef?.current) {
+  //       const classNames = consoleRef.current.className;
+  //       consoleRef.current.className = `${
+  //         !fullScreenMode ? `${classNames.replace('fullscreen-mode', '')}` : `${classNames} fullscreen-mode`
+  //       }`;
+  //     }
+  //     // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   }, [fullScreenMode]);
 
   const switchScreenMode = () => {
+    if (fullScreenMode && !!document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      document.body.requestFullscreen();
+    }
     dispatch(switchScreenAction());
   };
 
